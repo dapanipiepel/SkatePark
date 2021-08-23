@@ -8,7 +8,7 @@ const secretKey = 'LaPwMásSecretFromWorld';
 const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
-const { newSkater, getDataSkater, getSkaters, updateDataSkater } = require('../db/consultas')
+const { newSkater, getDataSkater, getSkaters, updateDataSkater, setSkaterStatus, deleteSkater } = require('../db/consultas')
 app.listen(3000, () => console.log('Server up & running at http://localhost:3000'));
 
 
@@ -18,6 +18,7 @@ const root = path.join(__dirname, '../');
 app.engine('handlebars', exphbs({
     defaultLayout: 'Main',
     layoutsDir: path.join(root, '/views/mainLayout'),
+    helpers: { index: (i) => parseInt(i) + 1 },
 }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json())
@@ -34,7 +35,7 @@ app.use(expressFileUpload(config));
 
 app.get('/', async (req, res) => {
     const skaters = await getSkaters();
-    console.log('skaters 37',skaters);
+    //console.log('skaters 37',skaters);
     res.render('Index', {skaters});
 });
 app.get('/login', (req, res) => {
@@ -102,5 +103,34 @@ app.post('/datos', async (req, res) => {
 
 app.get('/admin', async (req, res) => {
     const skaters = await getSkaters();
+    console.log('log105',skaters);
     res.render('Admin', {skaters})
+});
+
+app.put('/admin', async (req, res) => {
+    const { id, authorization } = req.body;
+    console.log('reqBody',req.body);
+    try {
+        const skater = await setSkaterStatus(id, authorization);
+        res.status(200).send(skater);
+    } catch (error) {
+        res.status(500).send({
+            error: `Algo salió tremendamente mal xd... ${error.message}`,
+            code: 500
+        });
+    };
+});
+
+app.delete('/datos', async (req, res) => {
+    const { email } = req.body;
+    console.log('bodyDelete',req.body);
+    try {
+        const deletedSkater = await deleteSkater(email);
+        res.status(200).send(deletedSkater);
+    } catch (error) {
+        res.status(500).send({
+            error: `El usuario no se ha podido eliminar... ${error.message}`,
+            code: 500,
+        })
+    }
 })

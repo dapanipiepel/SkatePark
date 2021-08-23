@@ -9,7 +9,7 @@
       <div class="form-group col-12 col-sm-6">
         <label>Email</label>
         <input
-          class="form-control m-auto"
+          class="form-control m-auto eMail"
           disabled
           value={{data.email}}
         />
@@ -36,10 +36,10 @@
       </div>
     </div>
     <div class="mb-1">
-      <button type='submit' class="btn btn-primary">Actualizar</button>
+      <button type='submit' class="btn btn-primary updateBtn">Actualizar</button>
     </div>
     <div>
-      <button class="btn btn-danger">Eliminar cuenta</button>
+      <button class="btn btn-danger deleteAccount">Eliminar cuenta</button>
     </div>
   </form>
 </div>
@@ -47,10 +47,26 @@
 <script>
     const inputs = [...document.querySelectorAll("input")]
     const form = document.querySelector('form');
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
+    const updateBtn = document.querySelector('.updateBtn');
+    updateBtn.addEventListener('click', async () => {
+        form.addEventListener('submit', e => e.preventDefault());
         const [mail, name, pw, pwConfirm, experiencia, especialiadad] = inputs.map(input => input.value);
         const body = {mail, name, pw, experiencia, especialiadad}
         const data = await axios.post('/datos', body);
+        if(data) {
+          alert('El usuario ha sido actualizado con mucho éxito');
+        }
+    });
+    $('.deleteAccount').click(async () => {
+      form.addEventListener('submit', e => e.preventDefault());
+      const email = $('.eMail').val();
+      //console.log('mailDelete', email);
+      const data = await axios.delete('/datos', {data: {email}});
+      if(data) {
+        alert('El usuario ha sido eliminado. Pq te fuiste we :(')
+        window.location.href = '/';
+      };
+      
+
     })
 </script>

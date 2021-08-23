@@ -60,6 +60,26 @@ const updateDataSkater = async (newSkaterData) => {
     const resultado = await pool.query(query);
     const updatedData = resultado.rows;
     return updatedData;
-}
+};
 
-module.exports = {newSkater, getDataSkater, getSkaters, updateDataSkater}
+const setSkaterStatus = async (id, authorization) => {
+    const query = {
+        text: `UPDATE skaters SET estado = $1 WHERE id = $2 RETURNING *;`,
+        values: [authorization, id],
+    };
+    //console.log('queryStatus',query);
+    const resultado = await pool.query(query);
+    const skaterUpdatedStatus = resultado.rows;
+    return skaterUpdatedStatus;
+};
+
+const deleteSkater = async (email) => {
+    const query = {
+        text: `DELETE FROM skaters where email = $1 RETURNING *;`,
+        values: [email],
+    };
+    const resultado = await pool.query(query);
+    const deletedSkater = resultado.rows;
+    return deletedSkater;
+}
+module.exports = {newSkater, getDataSkater, getSkaters, updateDataSkater, setSkaterStatus, deleteSkater}

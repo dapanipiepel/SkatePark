@@ -19,7 +19,7 @@
     <tbody>
       {{#each skaters}}
       <tr>
-        <th scope="row">1</th>
+        <th scope="row">{{index @index}}</th>
         <td><div><img class='img' src="/img/{{this.foto}}"></div></td>
         <td>{{this.nombre}}</td>
         <td>{{this.anos_experiencia}}</td>

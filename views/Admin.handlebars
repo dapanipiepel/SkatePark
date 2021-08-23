@@ -4,8 +4,44 @@
   <h2>Administración</h2>
   <hr class="w-50" />
 
+  <table class="table w-50 m-auto">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Foto</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Años de experiencia</th>
+        <th scope="col">Especialidad</th>
+        <th scope="col">Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each skaters}}
+        <tr>
+          <td>{{index @index}}</td>
+          <td><img src='/img/{{this.foto}}'></td>
+          <td>{{this.nombre}}</td>
+          <td>{{this.anos_experiencia}}</td>
+          <td>{{this.especialidad}}</td>
+          <td><input type="checkbox"{{#if this.estado}} checked{{/if}} onclick='changeStatus({{this.id}}, this)'></td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
 </div>
 
 <script>
-  
+  const changeStatus = async (id, element) => {
+    const authorization = element.checked;
+    //console.log('auth', authorization);
+    try {
+      await axios.put('/admin', {id, authorization});
+      alert(authorization ? 'Usuario autorizado' : 'Usuario desautorizado');
+    }
+    catch ({response}) {
+      const { data } = response;
+      const { error } = data;
+      alert(error);
+    }
+  }
 </script>
