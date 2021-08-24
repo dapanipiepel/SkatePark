@@ -83,7 +83,7 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.get('/datos', (req, res) => {
+app.get('/skaters', (req, res) => {
     const { token: token } = req.query;
     jwt.verify(token, secretKey, (error, decoded) => {
         if (error) return res.status(401).send('El token es inválido');
@@ -95,7 +95,7 @@ app.get('/datos', (req, res) => {
     });
 });
 
-app.post('/datos', async (req, res) => {
+app.post('/skaters', async (req, res) => {
     const skaterData = req.body;
     const updatedSkaterData = await updateDataSkater(skaterData);
     res.send(updatedSkaterData);
@@ -121,7 +121,7 @@ app.put('/admin', async (req, res) => {
     };
 });
 
-app.delete('/datos', async (req, res) => {
+app.delete('/skaters', async (req, res) => {
     const { email } = req.body;
     console.log('bodyDelete',req.body);
     try {
